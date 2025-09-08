@@ -7,27 +7,65 @@
       <div id="content-div">
         <div id="navbar">
           <v-toolbar density="compact" style="background-color: transparent">
-            <v-toolbar-title class="mobileHeader">
+            <v-toolbar-title>
               <p style="color: #fff;">Placeholder</p>
             </v-toolbar-title>
 
-            <RouterLink  to="/"><v-list-item class="item-hover menuItem">Warehouse </v-list-item></RouterLink>
-            <RouterLink  to="/production"><v-list-item class="item-hover menuItem">Production </v-list-item></RouterLink>
-            <RouterLink  to="/planning"><v-list-item class="item-hover menuItem">Planning </v-list-item></RouterLink>
-          
-            <v-spacer></v-spacer>
-            <v-btn @click="signOut()" prepend-icon="mdi-logout" class="ms-5" color="#fff">Log Out</v-btn>
+            <!-- Desktop navigation -->
+            <div class="d-none d-md-flex align-center flex-grow-1">
+              <RouterLink to="/"><v-list-item class="item-hover menuItem">Warehouse </v-list-item></RouterLink>
+              <RouterLink to="/production"><v-list-item class="item-hover menuItem">Production </v-list-item>
+              </RouterLink>
+              <RouterLink to="/planning"><v-list-item class="item-hover menuItem">Planning </v-list-item></RouterLink>
+              <v-spacer></v-spacer>
+              <v-divider vertical color="#fff" class="me-2"></v-divider>
+              <div class="d-flex">
+                <v-icon icon="mdi-account" class="me-2" color="#fff"></v-icon>
+                <h4 class="me-4" style="color: #fff; font-weight: 100;">Jan Kowalski</h4>
+              </div>
+              <v-divider vertical color="#fff"></v-divider>
+              <v-btn @click="signOut()" prepend-icon="mdi-logout" class="ms-5" color="#fff">Log Out</v-btn>
+            </div>
+
+            <!-- Mobile navigation -->
+            <div class="d-flex d-md-none">
+              <v-menu offset-y>
+                <template #activator="{ props }">
+                  <v-btn icon v-bind="props">
+                    <v-icon icon="mdi-menu" color="#fff"></v-icon>
+                  </v-btn>
+                </template>
+                <v-list style="width: 60vw!important;">
+                   <v-list-item>
+                    <v-icon icon="mdi-account" class="me-2" color="#000"></v-icon>
+                    <span style="color: #000; font-weight: 100;">Jan Kowalski</span>
+                  </v-list-item>
+                  <v-divider></v-divider>
+                  <RouterLink to="/">
+                    <v-list-item class="item-hover menuItem">Warehouse</v-list-item>
+                  </RouterLink>
+                  <RouterLink to="/production">
+                    <v-list-item class="item-hover menuItem">Production</v-list-item>
+                  </RouterLink>
+                  <RouterLink to="/planning">
+                    <v-list-item class="item-hover menuItem">Planning</v-list-item>
+                  </RouterLink>
+                  <v-divider></v-divider>
+                  <v-list-item>
+                    <v-btn @click="signOut()" prepend-icon="mdi-logout" color="primary" variant="text" block>Log Out</v-btn>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </div>
           </v-toolbar>
-        
         </div>
         <div id="subcontent" v-if="account == true">
-          <v-btn icon="mdi-arrow-up" variant="elevated" color="#000" @click="scrollToTop" id="myButton"
-            class="d-none" style="position: fixed; bottom: 130px; right: 80px; z-index: 1000"></v-btn>
+          <v-btn icon="mdi-arrow-up" variant="elevated" color="#000" @click="scrollToTop" id="myButton" class="d-none"
+            style="position: fixed; bottom: 130px; right: 80px; z-index: 1000"></v-btn>
           <MainContent></MainContent>
         </div>
       </div>
     </div>
-    
   </v-app>
 </template>
 
@@ -41,7 +79,7 @@ export default {
       account: true,
     };
   },
-   created() {
+  created() {
     window.addEventListener("scroll", this.actionScroll);
   },
 
@@ -62,16 +100,17 @@ export default {
         behavior: "smooth",
       });
     },
-     signIn() {
+    signIn() {
       this.account = true
     },
-    signOut(){
+    signOut() {
       this.account = false;
+      this.$router.push("/");
     }
   },
   components: {
     MainContent,
-    LoginForm
+    LoginForm,
 
   },
 };
@@ -97,15 +136,15 @@ body {
   overflow: auto !important;
   margin-top: 80px;
   /* padding: 15px 15px 2500px; */
-  padding: 15px;
+  /* padding: 15px; */
   font-size: 30px;
 }
 
 .router-link-active .v-list-item__content {
-  color:#fff !important;
+  color: #fff !important;
   font-weight: bold !important;
-  border-bottom: 8px solid #fff !important;
-  margin-bottom: -5px;
+  border-bottom: 10px solid #fff !important;
+  margin-bottom: -8px;
 }
 
 /* .router-link-active>.v-list-item {
@@ -115,7 +154,7 @@ body {
 } */
 
 .item-hover {
-  font-size: 24px;
+  font-size: 18px;
   margin-top: 5px !important;
   margin-bottom: 0 !important;
 }
@@ -127,6 +166,7 @@ body {
 
 a {
   text-decoration: none !important;
+  letter-spacing: 3px;
 }
 
 #navbar {
@@ -137,13 +177,25 @@ a {
   top: 0;
   z-index: 999;
   box-shadow: 1px 1px 1px -1px rgba(0, 0, 0, 0.2);
-  -webkit-box-shadow:  1px 1px 1px -1px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow:  1px 1px 1px -1px rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: 1px 1px 1px -1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 1px 1px 1px -1px rgba(0, 0, 0, 0.2);
 }
 
-@media (max-width: 768px) {
-  .mobileHeader {
-    display: none;
+.menuItem{
+  text-transform: uppercase;
+}
+
+@media (max-width: 959px) {
+  .item-hover.v-list-item>.v-list-item__content {
+    color: #000;
+    text-decoration: none !important;
+  }
+
+  .router-link-active .v-list-item__content {
+    color: #339cff !important;
+    font-weight: bold !important;
+    /* border-bottom: 8px solid #fff !important; */
+    /* margin-bottom: -5px; */
   }
 
   .item-hover {

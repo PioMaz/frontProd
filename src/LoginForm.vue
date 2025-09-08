@@ -1,5 +1,5 @@
 <template>
-    <div class="login-form">
+    <div class="login-form" v-if="!forgotPasswort">
         <div class="background">
             <div class="shape"></div>
             <div class="shape"></div>
@@ -12,7 +12,7 @@
                 </v-avatar>
             </div>
 
-            <h3 class="mt-2 mb-4">##LOGIN##</h3>
+            <h3 class="mt-2 mb-4">HELLO</h3>
 
             <div class="text-subtitle-1 text-medium-emphasis">Email address</div>
 
@@ -22,9 +22,10 @@
             <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
                 Password
 
-                <a class="text-caption text-decoration-none text-blue" href="#" rel="noopener noreferrer"
-                    target="_blank">
-                    Forgot password?</a>
+                <RouterLink to="/forgot-password">
+                    <v-list-item class="text-caption" style="color: #0686ff;" @click="forgotPasswort = true"
+                        variant="plain">Forgot password?</v-list-item>
+                </RouterLink>
             </div>
 
             <v-text-field :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'"
@@ -32,18 +33,32 @@
                 variant="outlined" @click:append-inner="visible = !visible"></v-text-field>
 
             <v-btn class="mb-8" color="blue" size="large" block @click="$emit('login')">
-                Login
+                Sign In
             </v-btn>
 
         </form>
     </div>
+    <div v-if="forgotPasswort" class="forgot-password">
+        <ForgotPassword @loginAgain="forgotPasswort = false; snackbar = true;"></ForgotPassword>
+    </div>
+    <v-snackbar v-model="snackbar" :timeout="timeout" color="success">
+        {{ text }}
+    </v-snackbar>
 </template>
 <script>
+import ForgotPassword from './ForgotPassword.vue';
 export default {
     emits: ["login"],
     data: () => ({
         visible: false,
+        forgotPasswort: false,
+        snackbar: false,
+        text: "Your password has been changed successfully. You can now sign in with your new password.",
+        timeout: 5000,
     }),
+    components: {
+        ForgotPassword
+    },
 }
 </script>
 
@@ -112,4 +127,20 @@ button {
     margin-top: 50px;
 }
 
+@media (max-width: 959px) {
+    .background .shape {
+        height: 80px;
+        width: 80px;
+    }
+
+    .shape:first-child {
+        left: 0px;
+        top: -15px;
+    }
+
+    .shape:last-child {
+        right: 0px;
+        bottom: -15px;
+    }
+}
 </style>
